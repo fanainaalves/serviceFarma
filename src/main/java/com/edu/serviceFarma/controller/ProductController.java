@@ -25,12 +25,12 @@ public class ProductController {
         try {
             // Validação dos campos obrigatórios
             if (productDTO.getTitle() == null || productDTO.getType() == null) {
-                return ResponseEntity.badRequest().body("Campos obrigatórios não preenchidos.");
+                return ResponseEntity.badRequest().body(productDTO);
             }
 
             // Validação do campo "code" único
             if (productService.isCodeAlreadyExists(productDTO.getCode())) {
-                return ResponseEntity.badRequest().body("O código já existe.");
+                return ResponseEntity.badRequest().body(productDTO);
             }
 
             // Se o tipo for UNIDADE, o campo "amount" não é obrigatório
@@ -41,7 +41,7 @@ public class ProductController {
             // Salva o produto no banco de dados
             ProductDTO savedProduct = productService.saveProduct(productDTO);
 
-            return ResponseEntity.ok(savedProduct.getId());
+            return ResponseEntity.ok().body(productService.saveProduct(productDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

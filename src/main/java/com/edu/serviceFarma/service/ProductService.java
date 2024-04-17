@@ -4,7 +4,6 @@ import com.edu.serviceFarma.dto.ProductDTO;
 import com.edu.serviceFarma.model.Product;
 import com.edu.serviceFarma.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +28,7 @@ public class ProductService {
         ProductDTO productDTO = new ProductDTO(product);
         return productDTO;
     }
-    public ProductDTO findProductByName(String name){
-        Product product = productRepository.findByName(name).get();
-        ProductDTO productDTO = new ProductDTO(product);
-        return productDTO;
-    }
-    public ProductDTO saveProduct(ProductDTO productDTO){
+    public ProductDTO saveProduct(ProductDTO entity){
         Product product = new Product(entity);
         productRepository.save(product);
         ProductDTO productDTO = new ProductDTO(product);
@@ -42,7 +36,7 @@ public class ProductService {
     }
     public ProductDTO updateProduct(Long id, ProductDTO productDTO){
         Product entity = productRepository.findById(id).get();
-        entity.setNome(productDTO.getNome());
+        entity.setCode(productDTO.getCode());
         productRepository.save(entity);
         ProductDTO newProductDTO = new ProductDTO(entity);
         return newProductDTO;
@@ -50,6 +44,7 @@ public class ProductService {
     public Product deleteProduct(Long id){
         Product entity = productRepository.findById(id).get();
         productRepository.delete(entity);
+        return entity;
     }
 
     public boolean isCodeAlreadyExists(String code) {
