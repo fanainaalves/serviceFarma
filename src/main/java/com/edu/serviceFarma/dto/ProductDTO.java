@@ -2,31 +2,16 @@ package com.edu.serviceFarma.dto;
 
 import com.edu.serviceFarma.model.Product;
 import com.edu.serviceFarma.model.ProductType;
-import lombok.*;
 
-@Data
-@AllArgsConstructor
+import java.util.Objects;
+
 
 public class ProductDTO {
 
-    @Getter
-    @Setter
     private Long id;
-
-    @Getter
-    @Setter
     private String title;
-
-    @Getter
-    @Setter
     private ProductType type;
-
-    @Getter
-    @Setter
     private Integer amount;
-
-    @Getter
-    @Setter
     private String code;
 
     public ProductDTO(){
@@ -34,5 +19,77 @@ public class ProductDTO {
     }
 
     public ProductDTO(Product product) {
+    }
+
+    public ProductDTO(Long id, String title, ProductType type, Integer amount, String code) {
+        this.id = id;
+        this.title = title;
+        this.type = type;
+        this.amount = amount;
+        this.code = code;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public ProductType getType() {
+        return type;
+    }
+
+    public void setType(ProductType type) {
+        this.type = type;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductDTO that = (ProductDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && type == that.type && Objects.equals(amount, that.amount) && Objects.equals(code, that.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, type, amount, code);
+    }
+
+    @Override
+    public String toString() {
+        return "ProductDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", type=" + type +
+                ", amount=" + amount +
+                ", code='" + code + '\'' +
+                '}';
     }
 }
