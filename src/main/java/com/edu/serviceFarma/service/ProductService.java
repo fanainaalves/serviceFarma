@@ -5,13 +5,13 @@ import com.edu.serviceFarma.dto.ProductDTO;
 import com.edu.serviceFarma.model.Product;
 import com.edu.serviceFarma.model.ProductType;
 import com.edu.serviceFarma.repositories.ProductRepository;
-import com.edu.serviceFarma.utils.ValidationRequest;
 import com.edu.serviceFarma.utils.ErrorResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -75,16 +75,21 @@ public class ProductService {
         return productRepository.existsByCode(code);
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-        ValidationRequest validationRequest = new ValidationRequest(token);
-        HttpEntity<ValidationRequest> validationRequestEntity = new HttpEntity<>(validationRequest, headers);
+        headers.set("Authorization", token); // Adiciona o token ao cabeçalho de autorização
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try{
-            restTemplate.postForEntity("http://localhost:8080/auth/api/v1/authorization/validation/", validationRequestEntity, Void.class);
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jsonNode = mapper.createObjectNode();
+        jsonNode.put("token", token);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonNode.toString(), headers);
+
+        try {
+            restTemplate.exchange("http://localhost:8080/auth/api/v1/authorization/validation", HttpMethod.POST, requestEntity, Void.class);
             return true;
-        } catch (HttpClientErrorException e){
+        } catch (HttpClientErrorException e) {
             return false;
         }
     }
