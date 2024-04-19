@@ -5,10 +5,9 @@ import com.edu.serviceFarma.model.ProductType;
 
 import java.util.Objects;
 
-
 public class ProductDTO {
 
-    private Long id;
+    private Integer id;
     private String title;
     private ProductType type;
     private Integer amount;
@@ -18,10 +17,9 @@ public class ProductDTO {
         super();
     }
 
-    public ProductDTO(Product product) {
-    }
+    public ProductDTO(Product product) {}
 
-    public ProductDTO(Long id, String title, ProductType type, Integer amount, String code) {
+    public ProductDTO(Integer id, String title, ProductType type, Integer amount, String code) {
         this.id = id;
         this.title = title;
         this.type = type;
@@ -29,11 +27,11 @@ public class ProductDTO {
         this.code = code;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -13,7 +13,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String title; // Título do produto
     private ProductType type; // Tipo do produto (CAIXA, UNIDADE, CARTELA)
@@ -24,7 +24,7 @@ public class Product {
         super();
     }
 
-    public Product(Long id, String title, ProductType type, Integer amount, String code) {
+    public Product(Integer id, String title, ProductType type, Integer amount, String code) {
         this.id = id;
         this.title = title;
         this.type = type;
@@ -35,11 +35,11 @@ public class Product {
     public Product(ProductDTO productDTO) {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
