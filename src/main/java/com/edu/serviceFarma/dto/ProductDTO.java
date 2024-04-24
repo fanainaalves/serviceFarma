@@ -17,7 +17,13 @@ public class ProductDTO {
         super();
     }
 
-    public ProductDTO(Product product) {}
+    public ProductDTO(Product product) {
+        this.id = product.getId();
+        this.title = product.getTitle();
+        this.type = product.getType();
+        this.amount = product.getAmount();
+        this.code = product.getCode();
+    }
 
     public ProductDTO(Integer id, String title, ProductType type, Integer amount, String code) {
         this.id = id;
