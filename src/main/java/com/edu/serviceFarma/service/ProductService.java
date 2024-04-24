@@ -27,10 +27,12 @@ public class ProductService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<ProductDTO> findAllProduct(){
+    public List<ProductDTO> findAllProduct() throws HttpClientErrorException{
         List<Product> listEntity = productRepository.findAll();
-        List<ProductDTO> listDTO = listEntity.stream().map(e -> new ProductDTO(e)).toList();
-        return listDTO;
+        if(listEntity.isEmpty()){
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+        return listEntity.stream().map(e -> new ProductDTO(e)).toList();
     }
 
     public ProductDTO findProductByID(Long id){

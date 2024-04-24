@@ -29,10 +29,17 @@ public class ProductController {
         return productService.saveProduct(productDTO);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductDTO>> listProduct(){
-        return ResponseEntity.ok(productService.findAllProduct());
-
+    @GetMapping("/")
+    public ResponseEntity<List<ProductDTO>> findAllProduct(){
+        try{
+            List<ProductDTO> productDTOList = productService.findAllProduct();
+            if (productDTOList.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(productDTOList);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("/{id}")
