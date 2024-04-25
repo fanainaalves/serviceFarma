@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,11 +36,12 @@ public class ProductController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<ProductDTO>> findAllProduct(HttpServletRequest request){
+    public ResponseEntity<Object> findAllProduct(HttpServletRequest request){
         String authorizationHeader = request.getHeader("Authorization");
+
         if(!productService.validateToken(authorizationHeader)){
             ErrorResponse errorResponse = new ErrorResponse("Usuário ou senha inválidos");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
         try{
             List<ProductDTO> productDTOList = productService.findAllProduct();
@@ -53,12 +56,12 @@ public class ProductController {
 
     @GetMapping("/products/")
     @ResponseBody
-    public ResponseEntity<List<ProductDTO>> findProductByType(@RequestParam ProductType type, HttpServletRequest request){
+    public ResponseEntity<Object> findProductByType(@RequestParam ProductType type, HttpServletRequest request){
         String authorizationHeader = request.getHeader("Authorization");
 
         if(!productService.validateToken(authorizationHeader)){
             ErrorResponse errorResponse = new ErrorResponse("Usuário ou senha inválidos");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
         List<Product> products = productService.findProductsByType(type);
@@ -70,12 +73,12 @@ public class ProductController {
     }
 
     @GetMapping("/<id>/{id}")
-    public ResponseEntity<ProductDTO> findProductByID(@PathVariable Long id, HttpServletRequest request){
+    public ResponseEntity<Object> findProductByID(@PathVariable Long id, HttpServletRequest request){
         String authorizationHeader = request.getHeader("Authorization");
 
         if(!productService.validateToken(authorizationHeader)){
             ErrorResponse errorResponse = new ErrorResponse("Usuário ou senha inválidos");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(productService.findProductByID(id));
