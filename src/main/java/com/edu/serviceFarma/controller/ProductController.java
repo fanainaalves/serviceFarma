@@ -1,15 +1,19 @@
 package com.edu.serviceFarma.controller;
 
 import com.edu.serviceFarma.dto.ProductDTO;
+import com.edu.serviceFarma.model.Product;
+import com.edu.serviceFarma.model.ProductType;
 import com.edu.serviceFarma.service.ProductService;
 import com.edu.serviceFarma.utils.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -40,6 +44,16 @@ public class ProductController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @GetMapping("/products/")
+    @ResponseBody
+    public ResponseEntity<List<ProductDTO>> findProductByType(@RequestParam ProductType type){
+        List<Product> products = productService.findProductsByType(type);
+        List<ProductDTO> productDTOs = products.stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(productDTOs);
     }
 
     @GetMapping("/{id}")

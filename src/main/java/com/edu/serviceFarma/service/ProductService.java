@@ -35,6 +35,10 @@ public class ProductService {
         return listEntity.stream().map(e -> new ProductDTO(e)).toList();
     }
 
+    public List<Product> findProductsByType(ProductType type){
+        return productRepository.findByType(type);
+    }
+
     public ProductDTO findProductByID(Long id){
         Product product = productRepository.findById(id).get();
         ProductDTO productDTO = new ProductDTO(product);
