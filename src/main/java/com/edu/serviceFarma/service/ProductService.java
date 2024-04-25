@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -27,12 +29,15 @@ public class ProductService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<ProductDTO> findAllProduct() throws HttpClientErrorException{
-        List<Product> listEntity = productRepository.findAll();
-        if(listEntity.isEmpty()){
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-        }
-        return listEntity.stream().map(e -> new ProductDTO(e)).toList();
+    //O código comentado é em caso de ser uma lista normal, na linha 33 ao invés de Page é List
+    public Page<ProductDTO> findAllProduct(Pageable pageable) throws HttpClientErrorException{
+//        List<Product> listEntity = productRepository.findAll();
+//        if(listEntity.isEmpty()){
+//            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+//        }
+//        return listEntity.stream().map(e -> new ProductDTO(e)).toList();
+        Page<Product> productPage = productRepository.findAll(pageable);
+            return productPage.map(ProductDTO::new);
     }
 
     public List<Product> findProductsByType(ProductType type){
