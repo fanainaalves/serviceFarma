@@ -29,15 +29,12 @@ public class ProductService {
     @Autowired
     private RestTemplate restTemplate;
 
-    //O código comentado é em caso de ser uma lista normal, na linha 33 ao invés de Page é List
-    public Page<ProductDTO> findAllProduct(Pageable pageable) throws HttpClientErrorException{
-//        List<Product> listEntity = productRepository.findAll();
-//        if(listEntity.isEmpty()){
-//            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-//        }
-//        return listEntity.stream().map(e -> new ProductDTO(e)).toList();
+    public Page<ProductDTO> findAllProduct(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
-            return productPage.map(ProductDTO::new);
+        if (productPage.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+        return productPage.map(ProductDTO::new);
     }
 
     public List<Product> findProductsByType(ProductType type){

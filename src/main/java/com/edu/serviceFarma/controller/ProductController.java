@@ -37,47 +37,17 @@ public class ProductController {
         return productService.saveProduct(productDTO);
     }
 
-
-    // O código comentado é em caso de ter a validação mas sem a paginação
-//    @GetMapping("/")
-//    public ResponseEntity<Object> findAllProduct(HttpServletRequest request){
-//        String authorizationHeader = request.getHeader("Authorization");
-//
-//        if(!productService.validateToken(authorizationHeader)){
-//            ErrorResponse errorResponse = new ErrorResponse("Usuário ou senha inválidos");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-//        }
-//        try{
-//            List<ProductDTO> productDTOList = productService.findAllProduct();
-//            if (productDTOList.isEmpty()) {
-//                return ResponseEntity.noContent().build();
-//            }
-//            return ResponseEntity.ok(productDTOList);
-//        } catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
-//    }
-
-    // método coma paginação mas sem a validação.
     @GetMapping("/")
-    public ResponseEntity<Page<ProductDTO>> findAllProduct(HttpServletRequest request, Pageable pageable){
-//        String authorizationHeader = request.getHeader("Authorization");
-//
-//        if(!productService.validateToken(authorizationHeader)){
-//            ErrorResponse errorResponse = new ErrorResponse("Usuário ou senha inválidos");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-//        }
-//        try{
-//            List<ProductDTO> productDTOList = productService.findAllProduct();
-//            if (productDTOList.isEmpty()) {
-//                return ResponseEntity.noContent().build();
-//            }
-//            return ResponseEntity.ok(productDTOList);
-//        } catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
+    public ResponseEntity<?> findAllProduct(HttpServletRequest request, Pageable pageable){
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if(!productService.validateToken(authorizationHeader)){
+            ErrorResponse errorResponse = new ErrorResponse("Usuário ou senha inválidos");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
         try {
-            Page<ProductDTO> productPage = (Page<ProductDTO>) productService.findAllProduct(pageable);
+            Page<ProductDTO> productPage = productService.findAllProduct(pageable);
             if (productPage.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
@@ -86,6 +56,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
 
     @GetMapping("/products/")
     @ResponseBody
