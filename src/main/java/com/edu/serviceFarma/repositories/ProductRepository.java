@@ -7,13 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product findByCode(String code);
     boolean existsByCode(String code);
     Page<Product> findAll(Pageable pageable); // Adicionando método para busca pageada
-    List<Product> findByType(ProductType type);
+    Page<Product> findByType(ProductType type, Pageable pageable);
+    Page<Product> findByTitleContainingOrCodeContaining(String title, String code, Pageable pageable);
+    Page<Product> findByTypeAndTitleContainingOrTypeAndCodeContaining(ProductType productType1, String title, ProductType productType2, String code, Pageable pageable);
 }

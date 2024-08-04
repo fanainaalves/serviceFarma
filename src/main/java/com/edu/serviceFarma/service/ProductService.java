@@ -29,6 +29,20 @@ public class ProductService {
     @Autowired
     private RestTemplate restTemplate;
 
+    public Page<ProductDTO> findAllProductByTypeAndSearch(String type, String search, Pageable pageable) {
+        return productRepository.findByTypeAndTitleContainingOrTypeAndCodeContaining(
+                ProductType.valueOf(type.toUpperCase()),
+                search,
+                ProductType.valueOf(type.toUpperCase()),
+                search,
+                pageable)
+                .map(ProductDTO::new);
+    }
+
+    public Page<ProductDTO> findAllProductBySearch(String search, Pageable pageable) {
+        return productRepository.findByTitleContainingOrCodeContaining(search, search, pageable).map(ProductDTO::new);
+    }
+
     public Page<ProductDTO> findAllProduct(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
         if (productPage.isEmpty()) {
@@ -37,9 +51,10 @@ public class ProductService {
         return productPage.map(ProductDTO::new);
     }
 
-    public List<Product> findProductsByType(ProductType type){
-        return productRepository.findByType(type);
+    public Page<ProductDTO> findByType(ProductType type, Pageable pageable){
+        return productRepository.findByType(type, pageable).map(ProductDTO::new);
     }
+
 
     public ProductDTO findProductByID(Long id){
         Product product = productRepository.findById(id).get();
@@ -101,4 +116,5 @@ public class ProductService {
             return false;
         }
     }
+
 }
