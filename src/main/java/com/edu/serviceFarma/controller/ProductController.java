@@ -66,7 +66,7 @@ public class ProductController {
     }
 
 
-    @GetMapping("/products/")
+    @GetMapping("/product/")
     @ResponseBody
     public ResponseEntity<Object> findByType(@RequestParam ProductType type, HttpServletRequest request, Pageable pageable){
         String authorizationHeader = request.getHeader("Authorization");
