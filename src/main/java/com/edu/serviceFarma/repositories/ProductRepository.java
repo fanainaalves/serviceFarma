@@ -12,7 +12,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product findByCode(String code);
     boolean existsByCode(String code);
-    Page<Product> findAll(Pageable pageable); // Adicionando método para busca pageada
+    Page<Product> findAll(Pageable pageable);
     Page<Product> findByType(ProductType type, Pageable pageable);
     Page<Product> findByTitleContainingOrCodeContaining(String title, String code, Pageable pageable);
     Page<Product> findByTypeAndTitleContainingOrTypeAndCodeContaining(ProductType productType1, String title, ProductType productType2, String code, Pageable pageable);
