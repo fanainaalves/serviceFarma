@@ -1,13 +1,15 @@
 package com.edu.serviceFarma.controller;
 
 import com.edu.serviceFarma.dto.ProductDTO;
-import com.edu.serviceFarma.model.ProductType;
+import com.edu.serviceFarma.model.ProductPageResponse;
 import com.edu.serviceFarma.service.ProductService;
 import com.edu.serviceFarma.utils.ErrorResponse;
-
+import com.edu.serviceFarma.model.ProductType;
+import com.edu.serviceFarma.model.Product;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +38,20 @@ public class ProductController {
     public ResponseEntity<?> findAllProduct(
             HttpServletRequest request,
             Pageable pageable,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String search){
+
+        Pageable paging = PageRequest.of(page - 1, size);
+
+        Page<ProductDTO> productsPage;
+        if (search != null && !search.isEmpty()) {
+            productsPage = productService.findAllProductBySearch(search, paging);
+        } else {
+            productsPage = productService.findAllProduct(paging);
+        }
+
         String authorizationHeader = request.getHeader("Authorization");
 
         if(!productService.validateToken(authorizationHeader)){
@@ -60,7 +74,7 @@ public class ProductController {
             if (productPage.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-            return ResponseEntity.ok(productPage);
+            return ResponseEntity.ok(new ProductPageResponse(productPage.getContent(), productPage.getTotalElements()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

@@ -71,7 +71,9 @@ public class ProductService {
             ErrorResponse errorResponse = new ErrorResponse("Código já existe ou é inválido");
             return ResponseEntity.badRequest().body(errorResponse);
         }
-        if (productDTO.getType() == ProductType.UNIDADE && productDTO.getAmount() == null){
+        if (productDTO.getType() == ProductType.UNIDADE ||
+                productDTO.getType() == ProductType.CAIXA ||
+                productDTO.getType() == ProductType.CARTELA && productDTO.getAmount() == null){
             productDTO.setAmount(1);
         }
         Product product = new Product(productDTO.getId(), productDTO.getTitle(), productDTO.getType(), productDTO.getAmount(), productDTO.getCode());
@@ -100,7 +102,7 @@ public class ProductService {
 
     public boolean validateToken(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", token); // Adiciona o token ao cabeçalho de autorização
+        headers.set("Authorization", token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ObjectMapper mapper = new ObjectMapper();
