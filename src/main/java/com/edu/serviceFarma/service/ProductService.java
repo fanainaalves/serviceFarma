@@ -31,23 +31,22 @@ public class ProductService {
 
     public Page<ProductDTO> findAllProductByTypeAndSearch(String type, String search, Pageable pageable) {
         return productRepository.findByTypeAndTitleContainingOrTypeAndCodeContaining(
-                ProductType.valueOf(type.toUpperCase()),
-                search,
-                ProductType.valueOf(type.toUpperCase()),
-                search,
-                pageable)
+                        ProductType.valueOf(type.toUpperCase()),
+                        search,
+                        ProductType.valueOf(type.toUpperCase()),
+                        search,
+                        pageable)
                 .map(ProductDTO::new);
     }
 
     public Page<ProductDTO> findAllProductBySearch(String search, Pageable pageable) {
-        return productRepository.findByTitleContainingOrCodeContaining(search, search, pageable).map(ProductDTO::new);
+        return productRepository.findByTitleContainingOrCodeContaining(search, search, pageable)
+                .map(ProductDTO::new);
     }
 
     public Page<ProductDTO> findAllProduct(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
-        if (productPage.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-        }
+
         return productPage.map(ProductDTO::new);
     }
 
@@ -83,7 +82,10 @@ public class ProductService {
     }
 
     public ProductDTO updateProduct(Long id, ProductDTO productDTO){
-        Product entity = productRepository.findById(id).get();
+        Product entity = productRepository.findById(id).orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+        entity.setTitle(productDTO.getTitle());
+        entity.setType(productDTO.getType());
+        entity.setAmount(productDTO.getAmount());
         entity.setCode(productDTO.getCode());
         productRepository.save(entity);
         ProductDTO newProductDTO = new ProductDTO(entity);

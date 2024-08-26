@@ -37,49 +37,43 @@ public class ProductController {
     @GetMapping("/")
     public ResponseEntity<?> findAllProduct(
             HttpServletRequest request,
-            Pageable pageable,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String type,
-            @RequestParam(required = false) String search){
+            @RequestParam(required = false) String search) {
+
+        if (page < 1) {
+            page = 1;
+        }
 
         Pageable paging = PageRequest.of(page - 1, size);
 
-        Page<ProductDTO> productsPage;
-        if (search != null && !search.isEmpty()) {
-            productsPage = productService.findAllProductBySearch(search, paging);
-        } else {
-            productsPage = productService.findAllProduct(paging);
-        }
-
         String authorizationHeader = request.getHeader("Authorization");
 
-        if(!productService.validateToken(authorizationHeader)){
+        if (!productService.validateToken(authorizationHeader)) {
             ErrorResponse errorResponse = new ErrorResponse("Usuário ou senha inválidos");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
-        try {
-            Page<ProductDTO> productPage = productService.findAllProduct(pageable);
-            if(type != null && search != null){
-                productPage = productService.findAllProductByTypeAndSearch(type, search, pageable);
-            } else if (type != null) {
-                productPage = productService.findByType(ProductType.valueOf(type), pageable);
-            } else if (search != null) {
-                productPage = productService.findAllProductBySearch(search, pageable);
+        Page<ProductDTO> productPage;
+        if (search != null && !search.isEmpty()) {
+            if (type != null) {
+                productPage = productService.findAllProductByTypeAndSearch(type, search, paging);
             } else {
-                productPage = productService.findAllProduct(pageable);
+                productPage = productService.findAllProductBySearch(search, paging);
             }
-
-            if (productPage.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(new ProductPageResponse(productPage.getContent(), productPage.getTotalElements()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } else if (type != null) {
+            productPage = productService.findByType(ProductType.valueOf(type), paging);
+        } else {
+            productPage = productService.findAllProduct(paging);
         }
-    }
 
+        if (productPage.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(new ProductPageResponse(productPage.getContent(), productPage.getTotalElements()));
+    }
 
     @GetMapping("/product/")
     @ResponseBody
